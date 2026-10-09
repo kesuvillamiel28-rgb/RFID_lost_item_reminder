@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFID Lost-Item Detection & Reminder</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .search-box { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #34495e; color: white; border-radius: 4px; }
+        tr:hover { background-color: #f9f9f9; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background-color: #e67e22; color: white; }
+        .no-data { text-align: center; padding: 30px; color: #95a5a6; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 Lost & Found Item Detection Portal</h1>
+    <p class="subtitle">IoT Personalized Lost-Item Detection and Reminder System</p>
+
+    <!-- Search bar para mabilis mahanap ng bisita ang gamit niya -->
+    <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="I-type ang pangalan ng iyong nawawalang gamit (hal. Wallet)...">
+
+    <table id="itemsTable">
+        <thead>
+            <tr>
+                <th>Pangalan ng Gamit (Item)</th>
+                <th>Kasalukuyang Lokasyon / Status</th>
+                <th>Oras na Nahanap</th>
+                <th>RFID Tag ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (items.length === 0) { %>
+                <tr>
+                    <td colspan="4" class="no-data">Walang nakalistang nawawalang gamit sa kasalukuyan.</td>
+                </tr>
+            <% } else { %>
+                <% items.forEach(function(item) { %>
+                    <tr>
+                        <td><strong><%= item.item_name %></strong></td>
+                        <td><span class="badge"><%= item.status %></span></td>
+                        <td><%= item.date_found %></td>
+                        <td style="font-family: monospace; color: #7f8c8d;"><%= item.tag_id %></td>
+                    </tr>
+                <% }); %>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+// JavaScript para sa live searching sa website ng bisita
+function filterTable() {
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("itemsTable");
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName("td")[0]; // Hanapin sa Item Name column
+        if (td) {
+            let txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+</script>
+
+</body>
+</html>
